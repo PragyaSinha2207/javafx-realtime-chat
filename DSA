@@ -1,0 +1,52 @@
+Problem1: Two Sum
+Given an integer array nums and an integer target, return the indices of the two numbers such that they add up to target.
+Assume exactly one valid pair exists, and you can’t use the same element twice.
+
+Example
+nums = [2, 7, 11, 15], target = 9 -> [0, 1] (because 2 + 7 = 9)
+
+Best Approach (One-pass Hash Map) — O(n) time, O(n) space Idea
+
+As you scan the array, for each number x, you need target - x to complete the pair.
+If you’ve seen target - x before, you’re done.
+
+Step-by-step (dry run)
+
+nums = [2, 7, 11, 15], target = 9
+i=0, x=2 → need 7. Map = { } → not found. Put 2→0.
+i=1, x=7 → need 2. Map = {2:0} → found! Return [0, 1].
+------------------------------------------------------------------------------------
+i	    x=nums[i]	     need = target - x	      map (before)	       action	                          map (after)
+0    	2            	 7	                      { }	                 not found → store 2→0	          { 2:0 }
+1    	7           	 2	                      { 2:0 }	             found 2 in map → return [0,1]     ____
+
+import java.util.*;
+public class TwoSumSolution {
+    // Returns indices of two numbers that sum to target.
+    public static int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> indexByValue = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int need = target - nums[i];
+            if (indexByValue.containsKey(need)) {
+                return new int[] { indexByValue.get(need), i };
+            }
+            // store current value's index for future complements
+            indexByValue.put(nums[i], i);
+        }
+        // If the problem guarantees a solution, this won't be reached.
+        // Otherwise, you can throw or return an empty result.
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+    // quick test
+    public static void main(String[] args) {
+        int[] nums = {2, 7, 11, 15};
+        int target = 9;
+        System.out.println(Arrays.toString(twoSum(nums, target))); // [0, 1]
+    }
+}
+
+Complexity
+Time: O(n) — each element is processed once.
+Space: O(n) — in worst case we store all elements in the map.
+------------------------------------------------------------------------------------
